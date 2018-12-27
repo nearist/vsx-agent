@@ -1,0 +1,110 @@
+{
+  "address": "0.0.0.0",
+  "port": 9857,
+  "log_file": "/var/log/iflex.log",
+  "log_level": "INFO",
+  "api_key": "v5*A2m4d",
+  "temperature_log": {
+    "enable": true,
+    "rate": 10,
+    "threshold": 100,
+    "duration": 10,
+    "file": "/var/log/iflex.tmp"
+  },
+  "dataset_path": {
+    "user": "/srv/ftp/nickr/",
+    "nearist": "/srv/ftp/nearist/"
+  },
+  "nodes": [
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_00_write_00",
+      "read": "/dev/xillybus_00_read_00"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_00_write_01",
+      "read": "/dev/xillybus_00_read_01"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_00_write_02",
+      "read": "/dev/xillybus_00_read_02"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_01_write_00",
+      "read": "/dev/xillybus_01_read_00"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_01_write_01",
+      "read": "/dev/xillybus_01_read_01"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_01_write_02",
+      "read": "/dev/xillybus_01_read_02"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_02_write_00",
+      "read": "/dev/xillybus_02_read_00"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_02_write_01",
+      "read": "/dev/xillybus_02_read_01"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_02_write_02",
+      "read": "/dev/xillybus_02_read_02"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_03_write_00",
+      "read": "/dev/xillybus_03_read_00"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_03_write_01",
+      "read": "/dev/xillybus_03_read_01"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_03_write_02",
+      "read": "/dev/xillybus_03_read_02"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_04_write_00",
+      "read": "/dev/xillybus_04_read_00"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_04_write_01",
+      "read": "/dev/xillybus_04_read_01"
+    },
+    {
+      "type": 0,
+      "revision": 6,
+      "write": "/dev/xillybus_04_write_02",
+      "read": "/dev/xillybus_04_read_02"
+    }
+  ]
+}
