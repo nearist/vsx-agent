@@ -4,7 +4,6 @@
   "log_file": "/var/log/iflex.log",
   "log_level": "INFO",
   "api_key": "v5*A2m4d",
-  "component_size": 4,
   "temperature_log": {
     "enable": false,
     "rate": 10,
