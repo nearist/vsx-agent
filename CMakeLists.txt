@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 project(iflex_sw)
 
-find_package(Subversion)
-if(SUBVERSION_FOUND)
-    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} Project)
-    message("Current revision is ${Project_WC_REVISION}")
-endif()
+#find_package(Subversion)
+#if(SUBVERSION_FOUND)
+#    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} Project)
+#    message("Current revision is ${Project_WC_REVISION}")
+#endif()
 
 SET(MAJOR_VERSION 1)
 SET(MINOR_VERSION 0)
