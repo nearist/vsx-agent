@@ -251,7 +251,7 @@ class AppConfig {
     tree.put("address", address);
     tree.put("port", port);
     tree.put("log_file", log_file);
-    tree.put("log_level", spdlog::level::to_c_str(log_level));
+    tree.put("log_level", spdlog::level::to_short_c_str(log_level));
 
     boost::property_tree::ptree children;
     for (NodeConfig &node : nodes) {
