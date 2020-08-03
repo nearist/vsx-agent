@@ -78,7 +78,8 @@ void Master::handle_accept(std::shared_ptr<Session> new_session,
 }
 
 void Master::load_config(const std::string &filename) {
-  m_config.load(filename);
+    //parse the config file and load it into its object
+    m_config.load(filename);
 
   Logger::getInstance(m_config.getLogFile(), m_config.getTemperatureLogFile());
   Logger::setLevel(m_config.getLogLevel());
@@ -90,11 +91,13 @@ void Master::load_config(const std::string &filename) {
   m_master_node->setTemperatureLogRate(m_config.getTemperatureLogRate());
   m_master_node->setComponentSize(m_config.getComponentSize());
 
+  //instantiate the node for each device file i.e. lane that is called for in the config
   for (const NodeConfig &node_config : m_config.getNodes()) {
     INode *node = nullptr;
 
     switch (node_config.getType()) {
-      case NodeType::DEVICE:
+        //make a device node for the correct type of card (currently only 0x06)
+        case NodeType::DEVICE:
         switch (node_config.getRevision()) {
           case IFLEX_1_0:
             node = new IFlexNode(node_config);
@@ -105,6 +108,7 @@ void Master::load_config(const std::string &filename) {
         }
 
         break;
+        // this is a TCP connection to another master node on another host
       case NodeType::TCP:
         node = new TCPNode(node_config);
         break;
@@ -116,9 +120,11 @@ void Master::load_config(const std::string &filename) {
       m_master_node->getChildren().push_back(node);
     }
   }
-
+  //Open the device files
   m_master_node->open();
+  //Calculate total volume and fv_count of the system loaded
   m_master_node->fillCapacity();
+  //starts timers for timestamps in temp and debug logs
   m_master_node->initTimers();
 
   boost::asio::ip::tcp::resolver resolver(m_io_service);

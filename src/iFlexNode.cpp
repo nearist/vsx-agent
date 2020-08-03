@@ -71,7 +71,8 @@ IFlexNode::IFlexNode(const NodeConfig &config) : INode(config) {
   m_pending_count = 0;
 
   m_transaction_id = 0;
-
+  //TODO: change these to be retrieved from the RTL
+  //TODO: understand what kind of a placeholder value these are currently supposed to be. (90194313216 and 45097156608 respectively)
   m_capacity.fv_count = FPGA_COUNT * (1UL << 32UL);
   m_capacity.volume = FPGA_COUNT * 2 * 1024 * 1024 * 1024UL;
 
