@@ -47,7 +47,7 @@ Master::Master()
 , m_context(boost::asio::ssl::context::tlsv12)
 #endif
 {}
-
+//start the session which handles the tcp acceptor
 void Master::start_accept() {
 #ifdef SSL_ENABLED
   std::shared_ptr<Session> new_session(
@@ -126,7 +126,7 @@ void Master::load_config(const std::string &filename) {
   m_master_node->fillCapacity();
   //starts timers for timestamps in temp and debug logs
   m_master_node->initTimers();
-
+    // TODO: need to create endpoint for the resolver not the other way around
   boost::asio::ip::tcp::resolver resolver(m_io_service);
   boost::asio::ip::tcp::endpoint
       endpoint = *resolver.resolve({m_config.getAddress(),
@@ -146,6 +146,7 @@ void Master::load_config(const std::string &filename) {
   m_context.use_private_key_file(TLS_PRIVATE, boost::asio::ssl::context::pem);
   m_context.use_tmp_dh_file(TLS_DH);
 #endif
+  //start the session
   start_accept();
 }
 
