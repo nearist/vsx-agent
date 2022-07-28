@@ -70,7 +70,7 @@ std::string arg_parse(int argc, char *argv[]) {
     std::cout << desc << std::endl;
     std::exit(0);
   } else if (vm.count("version")) {
-    std::cout << std::string(APP_VERSION) << std::endl;
+    //std::cout << std::string(APP_VERSION) << std::endl;
     std::exit(0);
   } else if (vm.count("config") == 0) {
     std::cerr << desc << std::endl;

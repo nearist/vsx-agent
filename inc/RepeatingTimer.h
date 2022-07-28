@@ -46,23 +46,15 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace IFlex {
-class RepeatingTimer {
-  bool m_first_loop;
-
-  uint64_t m_seconds;
-  std::function<void(bool)> m_callback;
-
-  boost::asio::io_service m_io_service;
-  boost::asio::strand m_strand;
-  boost::asio::deadline_timer m_timer;
-
+class RepeatingTimer 
+{
  public:
   RepeatingTimer(std::function<void(bool)> callback)
       : m_first_loop(true),
         m_seconds(0),
         m_callback(std::move(callback)),
         m_io_service(),
-        m_strand(m_io_service),
+        m_strand_(m_io_service),
         m_timer(m_io_service) {
 
   }
@@ -72,7 +64,7 @@ class RepeatingTimer {
 
     m_timer.expires_from_now(boost::posix_time::seconds(m_seconds));
     m_timer.async_wait(
-        m_strand.wrap(boost::bind(&RepeatingTimer::handler, this))
+        m_strand_.wrap(boost::bind(&RepeatingTimer::handler, this))
     );
   }
 
@@ -88,9 +80,20 @@ class RepeatingTimer {
 
     m_timer.expires_at(m_timer.expires_at() + boost::posix_time::seconds(m_seconds));
     m_timer.async_wait(
-        m_strand.wrap(boost::bind(&RepeatingTimer::handler, this))
+        m_strand_.wrap(boost::bind(&RepeatingTimer::handler, this))
     );
   }
+
+  private:
+    bool m_first_loop;
+
+    uint64_t m_seconds;
+    std::function<void(bool)> m_callback;
+
+    boost::asio::io_service m_io_service;
+    boost::asio::io_context::strand m_strand_;
+    boost::asio::deadline_timer m_timer;
+
 };
 }  // namespace IFlex
 
