@@ -13,21 +13,23 @@ add_compile_options(-DFMT_HEADER_ONLY)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Wno-pointer-arith -fexceptions -fnon-call-exceptions -rdynamic -g -ljsoncpp") # -I/usr/local/ssl/include -I/usr/local/include/json causes WTF problems to occur any way I add it
 find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
 find_package(HDF5)
+#find_package(jsoncpp)
 find_package(spdlog CONFIG REQUIRED)
 find_package(PkgConfig REQUIRED)
+
 
 add_library(Highfive INTERFACE)
 target_include_directories(Highfive INTERFACE /usr/local/include/highfive)
 
 
-add_library(Json INTERFACE)
-target_include_directories(Json INTERFACE /usr/local/include/json)
+add_library(json INTERFACE)
+target_include_directories(json INTERFACE /usr/local/include/json)
 
 include_directories(inc ${Boost_INCLUDE_DIR} ${HDF5_INCLUDE_DIR} /usr/local/ssl/include) #${JSONCPP_INCLUDE_DIRS}  /usr/local/include/json
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
-set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog Json Highfive) #${JSONCPP_LIBRARIES}
+set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog json Highfive "/usr/local/lib/libjsoncpp.a" "/usr/local/ssl/lib/libcrypto.so" "/usr/local/ssl/lib/libssl.so") #${JSONCPP_LIBRARIES}
 
 set(IFLEX_FILES
         src/main.cpp
