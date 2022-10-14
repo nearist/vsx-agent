@@ -19,20 +19,20 @@
     {
       "type": 0,
       "revision": 6,
-      "write": "/dev/xillybus_00_write_00",
-      "read": "/dev/xillybus_00_read_00"
+      "write": "/dev/xillybus_write_00",
+      "read": "/dev/xillybus_read_00"
     },
     {
       "type": 0,
       "revision": 6,
-      "write": "/dev/xillybus_00_write_01",
-      "read": "/dev/xillybus_00_read_01"
+      "write": "/dev/xillybus_write_01",
+      "read": "/dev/xillybus_read_01"
     },
     {
       "type": 0,
       "revision": 6,
-      "write": "/dev/xillybus_00_write_02",
-      "read": "/dev/xillybus_00_read_02"
+      "write": "/dev/xillybus_write_02",
+      "read": "/dev/xillybus_read_02"
     }
   ]
 }
