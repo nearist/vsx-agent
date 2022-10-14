@@ -1,7 +1,7 @@
 {
   "address": "0.0.0.0",
   "port": 9857,
-  "log_file": "/var/log/iflex.log",
+  "log_file": "/home/nearist/log/iflex.log",
   "log_level": "INFO",
   "api_key": "v5*A2m4d",
   "temperature_log": {
@@ -9,7 +9,7 @@
     "rate": 10,
     "threshold": 100,
     "duration": 10,
-    "file": "/var/log/iflex.tmp"
+    "file": "/home/nearist/log/iflex.tmp"
   },
   "dataset_path": {
     "user": "/srv/ftp/nickr/",

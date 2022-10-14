@@ -84,6 +84,7 @@ void Master::load_config(const std::string &filename) {
   Logger::getInstance(m_config.getLogFile(), m_config.getTemperatureLogFile());
   Logger::setLevel(m_config.getLogLevel());
 
+  //pull in the config data from the json file
   m_master_node->setApiKey(m_config.getApiKey());
   m_master_node->setDatasetNearist(m_config.getDatasetNearist());
   m_master_node->setDatasetUser(m_config.getDatasetUser());
@@ -126,14 +127,19 @@ void Master::load_config(const std::string &filename) {
   m_master_node->fillCapacity();
   //starts timers for timestamps in temp and debug logs
   m_master_node->initTimers();
-    // TODO: need to create endpoint for the resolver not the other way around
-  boost::asio::ip::tcp::resolver resolver(m_io_service);
+    
+  //This is the instantiation of the client side interface
+  //there is only one because there is only 1 outgoing interface from the master even if it is a slave master
+  boost::asio::ip::tcp::resolver resolver(m_io_service); // TODO: need to create endpoint for the resolver not the other way around
+  //  these two lines are to find the socket current versions do not use a resolver to find the socket interface
   boost::asio::ip::tcp::endpoint
       endpoint = *resolver.resolve({m_config.getAddress(),
                                     std::to_string(m_config.getPort())});
-  m_acceptor.open(endpoint.protocol());
+  m_acceptor.open(endpoint.protocol()); //what does it mean to open the acceptor (I assume this is on TCP and that is what ep.protocol() spits out)
+  //\/\/double check what is going on here im guessing its an effort to make the socket persistent but lets verify
   m_acceptor.set_option(boost::asio::socket_base::keep_alive(true));
   m_acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+  //this makes sense \/\/ but double check
   m_acceptor.bind(endpoint);
   m_acceptor.listen();
 

@@ -29,7 +29,7 @@ include_directories(inc ${Boost_INCLUDE_DIR} ${HDF5_INCLUDE_DIR} /usr/local/ssl/
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
-set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog json Highfive "/usr/local/lib/libjsoncpp.a" "/usr/local/ssl/lib/libcrypto.so" "/usr/local/ssl/lib/libssl.so") #${JSONCPP_LIBRARIES}
+set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog json Highfive "/usr/local/lib/libjsoncpp.a" "/usr/local/ssl/lib/libcrypto.so" "/usr/local/ssl/lib/libssl.so")
 
 set(IFLEX_FILES
         src/main.cpp

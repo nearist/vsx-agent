@@ -82,8 +82,9 @@ std::string arg_parse(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   try {
-    auto config_path = arg_parse(argc, argv);
-
+    //auto config_path = arg_parse(argc, argv);
+    //temp change for debug purposes
+    auto config_path = "/home/nearist/git/vsx-agent/conf/iflex.json";
     IFlex::Master s;
     s.load_config(config_path);
   } catch (std::exception &e) {
