@@ -55,7 +55,8 @@ enum DistanceMode {
   HAMMING = 0x0002,
   BIT_AND = 0x0003,
   BIT_OR = 0x0004,
-  JACCARD = 0x0005
+  JACCARD = 0x0005,
+  L2 = 0x0006
 };
 
 enum QueryMode {
