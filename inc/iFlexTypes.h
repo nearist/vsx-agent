@@ -48,6 +48,16 @@
 #include <spdlog/fmt/bundled/format.h>
 
 namespace IFlex {
+/*
+//NO_DISTANCE_MODE:
+//L1:
+//LMAX:
+//HAMMING:
+//BIT_AND:
+//BIT_OR:
+//JACCARD:
+//L2: normalized L1 over 
+*/
 enum DistanceMode {
   NO_DISTANCE_MODE = 0xFFFF,
   L1 = 0x0000,
@@ -59,6 +69,16 @@ enum DistanceMode {
   L2 = 0x0006
 };
 
+/*
+//NO_QUERY_MODE: This is the default mode for instantiation
+//ALL: Returns all results in sorted order
+//KNN_A: K nearist neighbor Ascending, closest distance given first
+//KNN_D: K nearist neighbor Descending, furthest distance given first
+//GT: Greater than, all results with distances greater than the threshold are returned. Note: the lower threshold is used by default in this mode
+//LT: Less than, all results with distances less than the threshold are returned. Note: the lower threshold is used by default in this mode
+//EQ: Equal, all results with distances equal to the threshold are returned. Note: the lower threshold is used by default in this mode
+//RANGE: All results within the range of a high and low threshold are returned.
+*/
 enum QueryMode {
   NO_QUERY_MODE = 0xFFFF,
   ALL = 0x0000,
@@ -70,6 +90,17 @@ enum QueryMode {
   RANGE = 0x0006
 };
 
+/*
+//RESET:
+//DISTANCE_MODE:
+//QUERY_MODE:
+//READ_COUNT:
+//THRESHOLD:
+//DS_LOAD:
+//QUERY:
+//RESET_TIMER:
+//GET_TIMER:
+*/
 enum Command : uint32_t {
   RESET = 0x00,
   DISTANCE_MODE = 0x01,
@@ -82,6 +113,28 @@ enum Command : uint32_t {
   GET_TIMER = 0x11,
 };
 
+/*
+//SUCCESS:
+//INVALID_SEQUENCE:
+//INVALID_ARGUMENT:
+//INVALID_PACKET:
+//NOT_SUPPORTED:
+//INVALID_COMMAND:
+//INVALID_DATA:
+//TIMEOUT:
+//INVALID_COMMAND:
+//INVALID_DATA:
+//TIMEOUT:
+//INVALID_CHECKSUM:
+//INVALID_API_KEY:
+//DATASET_FILE_NOT_FOUND:
+//DATASET_NOT_FOUND:
+//DATASET_SIZE_NOT_SUPPORTED:
+//QUERY_SIZE_NOT_SUPPORTED:
+//DISTANCE_MODE_NOT_SUPPORTED:
+//QUERY_MODE_NOT_SUPPORTED:
+//READ_COUNT_NOT_SUPPORTED:
+*/
 enum Status : uint32_t {
   SUCCESS = 0x00,
   INVALID_SEQUENCE = 0x01,
@@ -104,12 +157,15 @@ enum Status : uint32_t {
 
 enum NodeType : uint8_t {
   DEVICE = 0x00,
-  TCP = 0x01
+  TCP = 0x01,
+  LOCAL = 0x02
 };
 
 enum DeviceRevision : uint8_t {
   SIMULATOR = 0x00,
-  IFLEX_1_0 = 0x06
+  IFLEX_1_0 = 0x06,
+  FAISS_CPU = 0x07,
+  FAISS_GPU = 0x08
 };
 
 template<typename T>
@@ -122,6 +178,11 @@ struct Result {
   Result(uint64_t ds_id, T distance) : ds_id(ds_id), distance(distance) {}
 };
 
+/*Feature Vector information
+//vector_count : the quantity of vectors stored in the index/array
+//comp_count : component/feature count (or dimensionality) of the vectors stored in the index/array
+//node_count : number of devices that are being utilized by the agent. This is either the number of VSX cards being utilized, how many other servers are connected, or how many instances of faiss, or lastly a combination of the 3 are connected to the agent instance
+*/
 typedef struct {
   uint64_t vector_count;
   uint64_t comp_count;
@@ -147,6 +208,7 @@ typedef union {
   uint8_t b[8];
 } qword_t;
 
+//See DistanceMode enumerator for additional details
 inline std::string DistanceMode2String(const DistanceMode mode) {
   std::string str;
   switch (mode) {
@@ -171,11 +233,14 @@ inline std::string DistanceMode2String(const DistanceMode mode) {
     case DistanceMode::JACCARD:
       str = std::string("JACCARD");
       break;
+    case DistanceMode::L2:
+      str = std::string("L2");
+      break;
   }
-
   return str;
 }
 
+//See QueryMode enumerator for additional details
 inline std::string QueryMode2String(const QueryMode mode) {
   std::string str;
   switch (mode) {
@@ -204,10 +269,10 @@ inline std::string QueryMode2String(const QueryMode mode) {
       str = std::string("RANGE");
       break;
   }
-
   return str;
 }
 
+//See command enumerator for additional details
 inline std::string Command2String(Command command) {
   std::string str;
 
@@ -247,6 +312,7 @@ inline std::string Command2String(Command command) {
   return str;
 }
 
+//See Status enumerator for additional details
 inline std::string Status2String(Status status) {
   std::string str;
 
@@ -310,12 +376,14 @@ inline std::string Status2String(Status status) {
   return str;
 }
 
+//This error is triggered in the event of the dataset not being located at the path designated in the configuration script. Check it has been uploaded and that the filename is correct
 class DataSetNotFoundException : public std::runtime_error {
  public:
   explicit DataSetNotFoundException(const std::string &datasetName)
       : std::runtime_error("Dataset '" + datasetName + "' not found.") {}
 };
 
+//TODO: determine the difference between the datasetName and the fileName
 class FileNotFoundException : public std::runtime_error {
  public:
   explicit FileNotFoundException(const std::string &fileName)
@@ -328,6 +396,7 @@ class OutputFileExistsException : public std::runtime_error {
       : std::runtime_error("Output file '" + fileName + "' exists.") {}
 };
 
+//The Distance mode selected is not supported by the 
 class DistanceModeNotSupportedException : public std::runtime_error {
  public:
   DistanceModeNotSupportedException() : std::runtime_error(
