@@ -207,6 +207,7 @@ void IFlexNode::close() {
   }
 }
 
+//this is only called in open but why and is this the async handler call for sending(host) a command? for results only?
 void IFlexNode::TaskReader() {
   reader.open(m_df_read);
 
@@ -246,6 +247,7 @@ void IFlexNode::TaskReader() {
   reader.start();
 }
 
+// this is only called in open but why andf is this the async handler call for recieving(host) results only?
 void IFlexNode::TaskParser() {
   while (m_running) {
     iFlexNodeReader::packet_t packet{};
@@ -343,6 +345,7 @@ void IFlexNode::TaskParser() {
   }
 }
 
+//Command Builder/Handler for CMD_WRITE_REG
 void IFlexNode::WriteRegister(uint8_t fpga_select,
                               const Register address,
                               const uint16_t value) {
@@ -365,6 +368,7 @@ void IFlexNode::WriteRegister(uint8_t fpga_select,
   this->__write(m_df_write, packet.value().get(), packet.length());
 }
 
+//Command Builder/Handler for CMD_READ_REG
 void IFlexNode::ReadRegister(uint8_t fpga_select,
                              const Register address,
                              const uint16_t mask,
@@ -404,6 +408,7 @@ void IFlexNode::ReadRegister(uint8_t fpga_select,
   }
 }
 
+//Command Builder/Handler for CMD_CALC_START
 void IFlexNode::StartCalculation() {
   iflex_write_packet_t packet(1);
   packet.fpga_mask = FPGA_MASK;
