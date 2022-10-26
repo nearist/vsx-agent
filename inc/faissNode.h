@@ -130,25 +130,25 @@ class faissNode : public INode {
 
         void setDistanceMode(DistanceMode mode) override;
 
-        DistanceMode getDistanceMode() override;
+        DistanceMode getDistanceMode();
 
         void setQueryMode(QueryMode mode) override;
 
-        QueryMode getQueryMode() override;
+        QueryMode getQueryMode();
 
         void setReadCount(uint16_t count) override; 
 
-        uint16_t getReadCount() override;
+        uint16_t getReadCount();
 
         void setThreshold(uint32_t threshold) override;
 
         void setThreshold(uint32_t threshold_lower, uint32_t threshold_higher) override;
 
-        uint32_t getThreshold() override;
+        uint32_t getThreshold();
 
-        uint32_t getThreshold_Lo() override;
+        uint32_t getThreshold_Lo();
 
-        uint32_t getThreshold_Hi() override;
+        uint32_t getThreshold_Up();
 
         void dsLoad(uint64_t offset, const vector8_list_t &vectors) override;
 

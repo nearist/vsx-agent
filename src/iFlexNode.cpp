@@ -1,4 +1,4 @@
-/*
+ /*
 * Copyright (c) 2015-2018 in2H2 inc.
 * System developed for in2H2 inc. by Intermotion Technology, Inc.
 *
@@ -750,7 +750,7 @@ void IFlexNode::setQueryMode(const IFlex::QueryMode mode) {
 
 void IFlexNode::setReadCount(const uint16_t count) {
   auto tm = TimeMeter();
-
+  //the card doesn't support returning a k count larger than 102
   if (count > 0 && count < 102) {
     m_read_count = count;
   } else {
@@ -789,7 +789,7 @@ void IFlexNode::dsLoadRandom(const uint64_t offset, const uint64_t vector_count,
       uint32_t vector_per_fpga[FPGA_COUNT] = {};
 
       uint8_t fpga_num = 0;
-
+      //Determine the distribution of DSVs to each vector processing unit
       while (fv_count) {
         for (fpga_num = 0; fpga_num < FPGA_COUNT; fpga_num++) {
           if (fv_count) {
@@ -824,6 +824,7 @@ void IFlexNode::dsLoadRandom(const uint64_t offset, const uint64_t vector_count,
       vector8_list_t vectors(FPGA_COUNT * 16UL);
       fillVectorList(vectors, vectors.size(), comp_count, 0, 255);
 
+      //load vectors onto the VSX cards by batch
       while (vectors_to_load > 0) {
         uint64_t sub_count = std::min(vectors_to_load, FPGA_COUNT * 16UL);
 

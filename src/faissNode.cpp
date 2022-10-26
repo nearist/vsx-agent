@@ -78,6 +78,9 @@ namespace IFlex {
     }
 
     void faissNode::setDistanceMode(DistanceMode mode){
+        if(std::find(m_supported_query_modes.begin(), m_supported_distance_modes.end(),mode) == m_supported_distance_modes.end()){
+            throw DistanceModeNotSupportedException();
+        }
         m_distance_mode = mode;
         return;
     }
@@ -87,40 +90,48 @@ namespace IFlex {
     }
 
     void faissNode::setQueryMode(QueryMode mode){
+        if(std::find(m_supported_query_modes.begin(), m_supported_query_modes.end(),mode) == m_supported_query_modes.end()){
+            throw QueryModeNotSupportedException();
+        }
         m_query_mode = mode;
         return;
     }
 
-    faissNode::QueryMode getQueryMode(){
+    faissNode::QueryMode faissNode::getQueryMode(){
         return m_query_mode;
     }
 
     void faissNode::setReadCount(uint16_t count){
+        m_read_count = count;
         return;
     } 
 
     uint16_t faissNode::getReadCount(){
-        return DSV_Count;
+        return m_read_count;
+        //return DSV_Count;
     }
 
     void faissNode::setThreshold(uint32_t threshold){
+        m_threshold_lower = threshold;
         return;
     }
 
-    void faissNode::setThreshold(uint32_t threshold_lower, uint32_t threshold_higher){
+    void faissNode::setThreshold(uint32_t threshold_lower, uint32_t threshold_upper){
+        m_threshold_lower = threshold_lower;
+        m_threshold_upper = threshold_upper;
         return;
     }
 
     uint32_t faissNode::getThreshold(){
-        return Threshold_Lo;
+        return m_threshold_lower;
     }
 
     uint32_t faissNode::getThreshold_Lo(){
-        return Threshold_Lo;
+        return m_threshold_lower;
     }
 
-    uint32_t faissNode::getThreshold_Hi(){
-        return Threshold_Hi;
+    uint32_t faissNode::getThreshold_Up(){
+        return m_threshold_upper;
     }
 
     void faissNode::dsLoad(uint64_t offset, const vector8_list_t &vectors){
@@ -132,6 +143,13 @@ namespace IFlex {
     }
 
     void faissNode::dsLoadRandom(uint64_t offset, uint64_t vector_count, uint64_t comp_count){
+        //reset the faiss instance (clear the memory)
+        
+        //load in vars
+
+        //calculate distribution between devices (if running multi GPU)
+
+        
         return;
     }
 
