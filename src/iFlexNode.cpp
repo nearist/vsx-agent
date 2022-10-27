@@ -790,6 +790,7 @@ void IFlexNode::dsLoadRandom(const uint64_t offset, const uint64_t vector_count,
 
       uint8_t fpga_num = 0;
       //Determine the distribution of DSVs to each vector processing unit
+      //this can be drastically optimized so its a single loop forloop over the devices
       while (fv_count) {
         for (fpga_num = 0; fpga_num < FPGA_COUNT; fpga_num++) {
           if (fv_count) {
@@ -979,6 +980,7 @@ void IFlexNode::WriteDSBatch(const vector8_list_t &vectors,
   }
 }
 
+//create a random dataset of vectors
 void IFlexNode::fillVectorList(vector8_list_t &vector_list,
                                uint64_t vector_count, uint64_t comp_count,
                                uint8_t lower, uint8_t upper) {

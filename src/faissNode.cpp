@@ -146,10 +146,20 @@ namespace IFlex {
         //reset the faiss instance (clear the memory)
         
         //load in vars
+        m_offset = offset; // is this needed? is this the memory offset for the fpga's virtual memory space?
 
-        //calculate distribution between devices (if running multi GPU)
+        uint64_t fv_count = vector_count;
 
+        float *ds = new float[vector_count*comp_count];
+        //TODO: calculate distribution between devices (if running multi GPU)
+        //Additional feature if needed
+
+        //create the random dataset
         
+        fillVectorList(ds, vector_count, comp_count)
+
+        //instantiate a faiss instance
+
         return;
     }
 
@@ -165,4 +175,31 @@ namespace IFlex {
     uint64_t faissNode::getTimerValue(){
         return m_duration;
     }
+
+    void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count){
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis;
+
+        for(int i=0; i < vector_count; i++){
+            for(int j = 0; j < comp_count; j++){
+                DSVs[comp_count*i+j] = dis(gen);
+            }
+        }
+        return;
+    }
+
+    void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count, float lower, float upper) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution <> dis(lower,upper);
+        
+        for(int i=0; i < vector_count; i++){
+            for(int j=0; j<comp_count; j++){
+                DSVs[i*comp_count + j] = dis(gen);
+            }
+        }
+        return;
+    }
+
 } //namespace faiss

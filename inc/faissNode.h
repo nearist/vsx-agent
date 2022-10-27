@@ -44,6 +44,7 @@
 #include <numeric>
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 #include <thread>
 #include <mutex>
@@ -112,7 +113,8 @@ class faissNode : public INode {
     protected:
         //This is where all internal private calls 
         //necessary should be declared
-
+        void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count);
+        void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count, float lower, float upper);
     public:
         explicit faissNode(const NodeConfig &config);
 
