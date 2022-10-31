@@ -38,7 +38,7 @@
 #include "faissNode.h"
 
 namespace IFlex {
-    faissNode::faissNode(const NodeConfig &config) : INode(config){
+    faissNode::faissNode(const NodeConfig &config) : INode(config) {
        //set supported distance modes
 
        //set supported query modes
@@ -50,8 +50,8 @@ namespace IFlex {
        m_read_count = 0;
        m_threshold_upper = 0;
        m_threshold_lower =0;
-
-       m_read_queue = std::queue<iFlexNodeReader::packet_t>();
+        //this shouldn't be needed. only if an additional buffer layer beyond asio sockets is needed
+       //m_read_queue = std::queue<iFlexNodeReader::packet_t>();
 
        m_running = false;
 
@@ -78,7 +78,7 @@ namespace IFlex {
     }
 
     void faissNode::setDistanceMode(DistanceMode mode){
-        if(std::find(m_supported_query_modes.begin(), m_supported_distance_modes.end(),mode) == m_supported_distance_modes.end()){
+        if(std::find(m_supported_distance_modes.begin(), m_supported_distance_modes.end(),mode) == m_supported_distance_modes.end()){
             throw DistanceModeNotSupportedException();
         }
         m_distance_mode = mode;
@@ -97,7 +97,7 @@ namespace IFlex {
         return;
     }
 
-    faissNode::QueryMode faissNode::getQueryMode(){
+    IFlex::QueryMode faissNode::getQueryMode(){
         return m_query_mode;
     }
 
@@ -142,15 +142,13 @@ namespace IFlex {
         m_index.reset();
         m_offset = offset;
 
-        uint64_t fv_count = count; 
-
         HighFive::File file(fileName, HighFive::File::ReadOnly);
         auto ds = file.getDataSet(datasetName);
 
         auto space = ds.getMemSpace().getDimensions();
 
-        uint64_t fv_count = count;
-        uint64_t vec_cnt = space[0];
+        uint64_t vec_cnt = count;
+        //uint64_t vec_cnt = space[0];
         uint64_t comp_cnt = space[1];
 
         //TODO add a catch if memspace isn't large enough
@@ -162,15 +160,15 @@ namespace IFlex {
         //convert vector 8 to float array
         std::vector<float> float_data;
 
-        for(vec=0; vec<vec_cnt; vec++){
-            for(comp=0; comp<comp_cnt; comp++){
+        for(uint64_t vec=0; vec<vec_cnt; vec++){
+            for(uint64_t comp=0; comp<comp_cnt; comp++){
                 float_data.emplace_back(data[vec][comp]);
             }
         }
 
         faiss::IndexFlatL2 m_index(comp_cnt);
 
-        m_index.add(vec_cnt, float_data.data())
+        m_index.add(vec_cnt, float_data.data());
 
 
         return;
@@ -181,8 +179,6 @@ namespace IFlex {
         m_index.reset();//reset the index
         //load in vars
         m_offset = offset; // is this needed? is this the memory offset for the fpga's virtual memory space?
-
-        uint64_t fv_count = vector_count;
 
         float *ds = new float[vector_count*comp_count];
         //TODO: calculate distribution between devices (if running multi GPU)
@@ -202,9 +198,23 @@ namespace IFlex {
     void faissNode::query(const vector8_list_t &vectors, vector_result32_list_t &results){
         //mpa the difference between the old approach and what faiss wants
         //# queries, query dataset, neighbor#, result dist, result idx
-        float *dists = (float) results[0][:]; //TODO I know this cast type and slicing doesnt work but 
-        float *labels = (float) results[1][:];
-        float *queries = vectors;
+        float dists[results.size()*m_read_count];
+        faiss::Index::idx_t labels[results.size()*m_read_count];
+        int i=0;
+        for(auto query : results){
+            for(auto k_result : query){
+                dists[i] = (float) k_result.distance;
+                labels[i] = (faiss::Index::idx_t) k_result.ds_id;
+                i++;
+            }
+        }
+        std::vector<float> float_vectors;
+        for(vector8_t vec : vectors){
+            for(uint8_t comp : vec){
+                float_vectors.emplace_back(comp);
+            }
+        }
+        float *queries = float_vectors.data();
         m_index.search(vectors.size(), queries, m_read_count,dists, labels);
 
         //i need to recast type back to uint32 and into the vectors
@@ -225,8 +235,8 @@ namespace IFlex {
         std::mt19937 gen(rd());
         std::uniform_real_distribution<> dis;
 
-        for(int i=0; i < vector_count; i++){
-            for(int j = 0; j < comp_count; j++){
+        for(uint64_t i=0; i < vector_count; i++){
+            for(uint64_t j = 0; j < comp_count; j++){
                 DSVs[comp_count*i+j] = dis(gen);
             }
         }
@@ -238,14 +248,14 @@ namespace IFlex {
         std::mt19937 gen(rd());
         std::uniform_real_distribution <> dis(lower,upper);
         
-        for(int i=0; i < vector_count; i++){
-            for(int j=0; j<comp_count; j++){
+        for(uint64_t i=0; i < vector_count; i++){
+            for(uint64_t j=0; j<comp_count; j++){
                 DSVs[i*comp_count + j] = dis(gen);
             }
         }
         return;
     }
-
+/*
     float* faissNode::vector8_2_float(vector8_list_t vec){
         //conversion of elements from uint8 to float
         //conversion of pointer type
@@ -280,7 +290,7 @@ namespace IFlex {
         //conversion of pointer type
         return;
     }
-
+*/
 
 
 } //namespace faiss

@@ -6,7 +6,6 @@
 *
 * in2H2 inc. Team Members:
 * - Chris McCormick - Algorithm Research and Design
-* - Matt McCormick - Board Production, System Q/A
 *
 * Intermotion Technology Inc. Team Members:
 * - Mick Fandrich - Project Lead

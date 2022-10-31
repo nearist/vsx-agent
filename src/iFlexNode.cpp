@@ -638,6 +638,7 @@ void IFlexNode::query(const vector8_list_t &vectors,
   uint16_t query_id = GetTransactionId();
 
   auto tm_prepare = TimeMeter();
+  //building the query requests
   for (auto it = vectors.begin(); it != vectors.end(); ++it) {
     auto vector = (*it);
 

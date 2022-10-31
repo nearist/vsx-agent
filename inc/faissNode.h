@@ -97,7 +97,7 @@ class faissNode : public INode {
 
         bool m_running;
         //TODO create packet structure for faiss buffers
-        std::queue<packet_t> m_read_queue;
+        //std::queue<packet_t> m_read_queue;
 
         //request and result map is not needed as it is a FPGA array problem        
         //possibly add something like this for multi GPU
@@ -117,15 +117,15 @@ class faissNode : public INode {
     protected:
         //This is where all internal private calls 
         //necessary should be declared
-        void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count);
-        void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count, float lower, float upper);
+        void fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count);
+        void fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count, float lower, float upper);
 
-        float* faissNode::vector8_2_float(vector8_list_t vec);
+        /*float* faissNode::vector8_2_float(vector8_list_t vec);
         vector8_list_t faissNode::float_2_vector8(float* array);
         faiss::Index::idx_t* faissNode::vector32_2_idx(vector32_list_t vec);
         vector32_list_t faissNode::idx_2_vector32(faiss::Index::idx_t* array);
         float* faissNode::vector32_2_float(vector32_list_t vec);
-        vector32_list_t faissNode::float_2_vector32(float * array);
+        vector32_list_t faissNode::float_2_vector32(float * array);*/
     public:
         explicit faissNode(const NodeConfig &config);
 

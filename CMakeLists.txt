@@ -16,6 +16,7 @@ find_package(HDF5)
 #find_package(jsoncpp)
 find_package(spdlog CONFIG REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(faiss REQUIRED)
 
 
 add_library(Highfive INTERFACE)
@@ -29,7 +30,7 @@ include_directories(inc ${Boost_INCLUDE_DIR} ${HDF5_INCLUDE_DIR} /usr/local/ssl/
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
-set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog json Highfive "/usr/local/lib/libjsoncpp.a" "/usr/local/ssl/lib/libcrypto.so" "/usr/local/ssl/lib/libssl.so")
+set(IFLEX_TARGET_LIBRARIES ${Boost_LIBRARIES} boost_thread pthread ${HDF5_C_LIBRARIES} spdlog::spdlog json Highfive faiss "/usr/local/lib/libjsoncpp.a" "/usr/local/ssl/lib/libcrypto.so" "/usr/local/ssl/lib/libssl.so")
 
 set(IFLEX_FILES
         src/main.cpp
@@ -49,6 +50,7 @@ set(IFLEX_FILES
         inc/RepeatingTimer.h
         inc/TimeMeter.h
         inc/iFlexNodeReader.h
+        inc/faissNode.h
         src/Logger.cpp
         src/LinuxWrapper.cpp
         src/Master.cpp
@@ -56,6 +58,7 @@ set(IFLEX_FILES
         src/Session.cpp
         src/iFlexNode.cpp
         src/TCPNode.cpp
+        src/faissNode.cpp
         )
 
 add_executable(iflexd ${IFLEX_FILES})
