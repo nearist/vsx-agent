@@ -52,6 +52,8 @@
 #include <chrono>
 #include <boost/algorithm/string/replace.hpp>
 
+#include <faiss/IndexFlat.h>
+
 #define H5_USE_BOOST
 #include <highfive/H5DataSet.hpp>
 #include <highfive/H5File.hpp>
@@ -69,6 +71,8 @@ class faissNode : public INode {
 
     protected:
         //TODO check data type for all of these declared vars 
+        faiss::IndexFlatL2 m_index;
+        
         int32_t Threshold_Lo;
         int32_t Threshold_Hi;
         int16_t DSV_Count; //num of data set vectors
@@ -115,6 +119,13 @@ class faissNode : public INode {
         //necessary should be declared
         void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count);
         void faissNode::fillVectorList(float *DSVs, uint64_t vector_count, uint64_t comp_count, float lower, float upper);
+
+        float* faissNode::vector8_2_float(vector8_list_t vec);
+        vector8_list_t faissNode::float_2_vector8(float* array);
+        faiss::Index::idx_t* faissNode::vector32_2_idx(vector32_list_t vec);
+        vector32_list_t faissNode::idx_2_vector32(faiss::Index::idx_t* array);
+        float* faissNode::vector32_2_float(vector32_list_t vec);
+        vector32_list_t faissNode::float_2_vector32(float * array);
     public:
         explicit faissNode(const NodeConfig &config);
 

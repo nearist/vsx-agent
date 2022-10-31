@@ -139,12 +139,46 @@ namespace IFlex {
     }
 
     void faissNode::dsLoadFromFile(const std::string &fileName, const std::string &datasetName, uint64_t offset, uint64_t count){
+        m_index.reset();
+        m_offset = offset;
+
+        uint64_t fv_count = count; 
+
+        HighFive::File file(fileName, HighFive::File::ReadOnly);
+        auto ds = file.getDataSet(datasetName);
+
+        auto space = ds.getMemSpace().getDimensions();
+
+        uint64_t fv_count = count;
+        uint64_t vec_cnt = space[0];
+        uint64_t comp_cnt = space[1];
+
+        //TODO add a catch if memspace isn't large enough
+        //pull the data out of the hdf5 file into an object
+        vector8_list_t data;
+
+        ds.select({offset,0},{vec_cnt, comp_cnt},{}).read(data);
+
+        //convert vector 8 to float array
+        std::vector<float> float_data;
+
+        for(vec=0; vec<vec_cnt; vec++){
+            for(comp=0; comp<comp_cnt; comp++){
+                float_data.emplace_back(data[vec][comp]);
+            }
+        }
+
+        faiss::IndexFlatL2 m_index(comp_cnt);
+
+        m_index.add(vec_cnt, float_data.data())
+
+
         return;
     }
 
     void faissNode::dsLoadRandom(uint64_t offset, uint64_t vector_count, uint64_t comp_count){
         //reset the faiss instance (clear the memory)
-        
+        m_index.reset();//reset the index
         //load in vars
         m_offset = offset; // is this needed? is this the memory offset for the fpga's virtual memory space?
 
@@ -154,16 +188,26 @@ namespace IFlex {
         //TODO: calculate distribution between devices (if running multi GPU)
         //Additional feature if needed
 
-        //create the random dataset
-        
-        fillVectorList(ds, vector_count, comp_count)
+        //fill in the random dataset
+        fillVectorList(ds, vector_count, comp_count);
 
         //instantiate a faiss instance
+        faiss::IndexFlatL2 m_index(comp_count);
+        //load the dataset into the dataset object
+        m_index.add(vector_count, ds);
 
         return;
     }
 
     void faissNode::query(const vector8_list_t &vectors, vector_result32_list_t &results){
+        //mpa the difference between the old approach and what faiss wants
+        //# queries, query dataset, neighbor#, result dist, result idx
+        float *dists = (float) results[0][:]; //TODO I know this cast type and slicing doesnt work but 
+        float *labels = (float) results[1][:];
+        float *queries = vectors;
+        m_index.search(vectors.size(), queries, m_read_count,dists, labels);
+
+        //i need to recast type back to uint32 and into the vectors
         return;
     }
 
@@ -201,5 +245,42 @@ namespace IFlex {
         }
         return;
     }
+
+    float* faissNode::vector8_2_float(vector8_list_t vec){
+        //conversion of elements from uint8 to float
+        //conversion of pointer type
+        return;
+    }
+
+    vector8_list_t faissNode::float_2_vector8(float* array){
+        //conversion of elements from float to uint8
+        //conversion of pointer type
+        return;
+    }
+
+    faiss::Index::idx_t* faissNode::vector32_2_idx(vector32_list_t vec){
+        //conversion of elements from uint32 to faiss idx
+        //conversion of pointer
+        return;
+    }
+
+    vector32_list_t faissNode::idx_2_vector32(faiss::Index::idx_t* array){
+        //conversion of elements from faiss idx to uint32
+        return;
+    }
+
+    float* faissNode::vector32_2_float(vector32_list_t vec){
+        //conversion of elements from uint32 to float
+        //conversion of pointer type
+        return;
+    }
+
+    vector32_list_t faissNode::float_2_vector32(float * array){
+        //conversion of elements from float to uint32
+        //conversion of pointer type
+        return;
+    }
+
+
 
 } //namespace faiss
